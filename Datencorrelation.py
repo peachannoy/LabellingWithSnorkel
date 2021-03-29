@@ -20,7 +20,7 @@ def load_spam_dataset(load_train_labels: bool = False):
     # Remove several fields
     df = df.drop("location", axis=1)
     df = df.drop("date", axis=1)
-    df["label"]=-1
+    df = df.rename(columns={"raintomorrow": "label"})
     # Shuffle order
     df = df.sample(frac=1, random_state=123).reset_index(drop=True)
 
@@ -28,11 +28,8 @@ def load_spam_dataset(load_train_labels: bool = False):
     df_train =df
 
     if not load_train_labels:
+        df_train, df_test = train_test_split(df_train, test_size=1250, random_state=123, stratify=df_train.label)
         df_train["label"] = np.ones(len(df_train["label"])) * -1
 
-    df_valid, df_test = train_test_split(
-        df_train, test_size=250, random_state=123, stratify=df_train.label
-    )
 
-
-    return df_train, df_test
+    return df_train, df_test, df
