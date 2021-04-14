@@ -100,3 +100,14 @@ preds_train = majority_model.predict(L=L_train)
 ###---------------------------------------
 majority_acc = majority_model.score(L=L_test, Y=Y_test, tie_break_policy="random")["accuracy"]
 print(f"{'Majority Vote Accuracy:':<25} {majority_acc * 100:.1f}%")
+
+###---------------------------------------
+from snorkel.labeling.model import LabelModel
+
+label_model = LabelModel(cardinality=2, verbose=True)
+label_model.fit(L_train=L_train, n_epochs=1000, log_freq=100, seed=123)
+
+label_model_acc = label_model.score(L=L_test, Y=Y_test, tie_break_policy="random")[
+    "accuracy"
+]
+print(f"{'Label Model Accuracy:':<25} {label_model_acc * 100:.1f}%")
